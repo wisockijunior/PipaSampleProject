@@ -2,15 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ConnectSample : MonoBehaviour
 {
+    private string basePath;
+    private string url;
 
-    
+    public Text UI_TextOutput_URL;
+    public Text UI_TextOutput_basePath;
 
     // Start is called before the first frame update
     void Start()
     {
+        bookmark.step_3_1 Unity_project_configuration;
+        /*
+         
+            3.1.Unity project configuration
+
+            Create an empty Unity project.Assuming the game would have online features and we’ll
+            have 3 environments(e.g.test, homologation and production, with different server URL’s),
+            create a way to define which environment to connect.When hitting ‘Play’, the game must display
+            which environment is selected.
+        */
+
+        #region SetupBasePath
         // locallow file
         //url = "file:///" + Application.dataPath + "/AssetBundles/" + assetBundleName;
         //basePath = @"file://D:/testeAssetBundle/AssetBundles/" + assetBundleName;
@@ -62,12 +78,39 @@ public class ConnectSample : MonoBehaviour
             //basePath = @"file://error/";
         }
 
+        
+        string themePath = "western";        
+        string assetBundleName = themePath + "/avatar";
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            url = basePath + "WebGL/" + assetBundleName;
+        else
+        if (Application.platform == RuntimePlatform.Android)
+            url = basePath + "Android/" + assetBundleName;
+        else
+        if (Application.platform == RuntimePlatform.WindowsPlayer
+            || Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            // default - all other platforms
+
+            url = basePath + "Windows/" + assetBundleName;
+        }
+
 
 #if UNITY_WEBGL
         //basePath = @"http://177.96.18.133:8080/";
         //basePath = @"http://187.112.57.215:8080/";
         //basePath = @"http://192.168.25.26:8080/";
 #endif
+
+        #endregion
+
+        Debug.LogWarning("basePath:" + basePath);
+        Debug.LogWarning("url:" + url);
+
+        UI_TextOutput_URL.text = url;
+        UI_TextOutput_basePath.text = basePath;
+
 
         // first time
         JustLoad_a_sample_avatar();
@@ -79,7 +122,7 @@ public class ConnectSample : MonoBehaviour
         
     }
 
-    private string basePath;
+    
 
     private void JustLoad_a_sample_avatar()
     {
@@ -226,10 +269,10 @@ public class ConnectSample : MonoBehaviour
 
     public void InstantiateObject(WskRequest wskRequest, string assetItem_PrefabName, string assetBundleName)
     {
-        string url;
         
 
-        
+
+
 
         /*
          (3) Environment selection & build script
@@ -244,7 +287,7 @@ public class ConnectSample : MonoBehaviour
 
 
 
-       
+
 
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -253,10 +296,11 @@ public class ConnectSample : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android)
             url = basePath + "Android/" + assetBundleName;
         else
-        //if (Application.platform == RuntimePlatform.WindowsPlayer)
+        if (Application.platform == RuntimePlatform.WindowsPlayer
+            || Application.platform == RuntimePlatform.WindowsEditor)
         {
             // default - all other platforms
-            
+
             url = basePath + "Windows/" + assetBundleName;
         }
 
